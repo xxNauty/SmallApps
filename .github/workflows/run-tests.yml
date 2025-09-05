@@ -1,4 +1,4 @@
-name: Run Script on Every Commit
+name: Run Tests
 
 on: [push]
 
