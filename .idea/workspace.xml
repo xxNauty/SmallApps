@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad044d1a-d900-4d51-bf6e-a4d9a0c54c8b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/todo_app/database/database_operations.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/todo_app/database/prepare_database.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/todo_app/database/tasks.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/todo_app/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/todo_app/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="ad044d1a-d900-4d51-bf6e-a4d9a0c54c8b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,7 +20,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="readme-file" />
+        <entry key="$PROJECT_DIR$" value="todo-app" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -61,7 +52,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "todo-app",
+    "git-widget-placeholder": "github-workflows",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -187,7 +178,7 @@
       <workItem from="1756997175026" duration="590000" />
       <workItem from="1756997803783" duration="4267000" />
       <workItem from="1757014044238" duration="5921000" />
-      <workItem from="1757052911259" duration="14574000" />
+      <workItem from="1757052911259" duration="15042000" />
     </task>
     <servers />
   </component>
