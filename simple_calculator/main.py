@@ -13,10 +13,16 @@ def string_to_num(input_data: str) -> int | float:
 
 
 def custom_sum(a: int | float, b: int | float) -> int | float:
+    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
+        raise TypeError("Only numbers are available")
+
     return a + b
 
 
 def custom_difference(a: int | float, b: int | float, reversed_diff: bool = False) -> int | float:
+    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
+        raise TypeError("Only numbers are available")
+
     if reversed_diff:
         return b - a
     else:
@@ -24,12 +30,21 @@ def custom_difference(a: int | float, b: int | float, reversed_diff: bool = Fals
 
 
 def custom_product(a: int | float, b: int | float) -> int | float:
+    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
+        raise TypeError("Only numbers are available")
+
     return a * b
 
 
-def custom_quotient(a: int | float, b: int | float, type_of_division: TYPES_OF_DIVISION) -> int | float | None:
+def custom_quotient(a: int | float, b: int | float, type_of_division: str = "normal") -> int | float | None:
+    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
+        raise TypeError("Only numbers are available")
+
     if b == 0:
         raise ZeroDivisionError("You cannot divide anything by 0.")
+
+    if type_of_division not in TYPES_OF_DIVISION:
+        raise TypeError("Incorrect type of division")
 
     match type_of_division:
         case "integer":
@@ -39,18 +54,6 @@ def custom_quotient(a: int | float, b: int | float, type_of_division: TYPES_OF_D
         case "modulus":
             return a % b
     return None
-
-# def custom_pow(base: int|float, power: int|float) -> int|float:
-#     result = 1
-#     for _ in range(int(power)):
-#         result *= base
-#     decimal_part_of_pow = power - math.floor(power)
-#     if decimal_part_of_pow != 0:
-#         result *= base * decimal_part_of_pow
-#
-#     return result
-
-
 
 def main():
     action = int(input("Choose action: \n1. Sum\n2. Subtraction\n3. Multiplication\n4. Division\n"))
@@ -64,7 +67,7 @@ def main():
         case 1:
             print(custom_sum(a, b))
         case 2:
-            reversed_diff = True if input("Do you want to make reversed difference? Y/N") == "Y" else False
+            reversed_diff = True if input("Do you want to make reversed difference? Y/N").lower() == "y" else False
             print(custom_difference(a, b, reversed_diff))
         case 3:
             print(custom_product(a, b))
@@ -74,4 +77,6 @@ def main():
                 raise ValueError("Incorrect type of division")
             print(custom_quotient(a, b, "integer"))
 
-main()
+
+if __name__ == "__main__":
+    main()
