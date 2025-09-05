@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from simple_calculator import main as calculator
+import simple_calculator.main as calculator
 
 
 class TestMainFunction(unittest.TestCase):
