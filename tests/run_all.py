@@ -7,6 +7,7 @@ files_ran = 0
 
 for root, dirs, files in os.walk(directory):
     for filename in files:
+        print(filename)
         if filename.endswith('.py') and filename != 'run_all.py':
             filepath = os.path.join(root, filename)
             print(f'Running {filepath}...')
