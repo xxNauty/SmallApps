@@ -77,7 +77,7 @@
       <recent name="D:\Nauka\Python\SmallApps\tests\simple-calculator" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.database_operations">
+  <component name="RunManager" selected="Python.Tests">
     <configuration name="Tests" type="PythonConfigurationType" factoryName="Python">
       <module name="SmallApps" />
       <option name="ENV_FILES" value="" />
@@ -178,7 +178,7 @@
       <workItem from="1756997175026" duration="590000" />
       <workItem from="1756997803783" duration="4267000" />
       <workItem from="1757014044238" duration="5921000" />
-      <workItem from="1757052911259" duration="15042000" />
+      <workItem from="1757052911259" duration="15408000" />
     </task>
     <servers />
   </component>
