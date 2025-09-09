@@ -35,6 +35,8 @@ class Task:
 
         if not isinstance(due_to, datetime):
             raise TypeError("Due to date should be of datetime type")
+        elif due_to <= created_at:
+            raise ValueError("Due to date must be after created at date")
         else:
             self.due_to = due_to
 
