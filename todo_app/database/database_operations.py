@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 from todo_app import task
 
@@ -8,9 +9,9 @@ cursor.execute(
         '''
         CREATE TABLE IF NOT EXISTS tasks(
             id INTEGER PRIMARY KEY,
-            name TEXT,
+            title TEXT CHECK (length(title) BETWEEN 3 AND 25),
             priority INTEGER CHECK (priority BETWEEN 1 AND 3),
-            content TEXT,
+            content TEXT CHECK (length(content) >= 10),
             due_to DATETIME,
             created_at DATETIME,
             is_done BOOLEAN
@@ -21,11 +22,11 @@ cursor.execute(
 def create_new_task(new_task: task.Task) -> None:
     cursor.execute(
         '''
-        INSERT INTO tasks (name, priority, content, due_to, created_at,  is_done)
+        INSERT INTO tasks (title, priority, content, due_to, created_at,  is_done)
         VALUES (?, ?, ?, ?, ?, ?)
         ''',
         (
-            new_task.name,
+            new_task.title,
             new_task.priority,
             new_task.content,
             new_task.due_to,
@@ -34,36 +35,75 @@ def create_new_task(new_task: task.Task) -> None:
         )
     )
 
-def update_priority(task_name: str, priority: int) -> None:
+def update_priority(title: str, priority: int) -> None:
     cursor.execute(
         '''
-        UPDATE tasks SET priority = ? WHERE name = ?
+        SELECT * FROM tasks WHERE title = ?
         ''',
-        (priority, task_name)
+        (title,)
     )
+    found_task = cursor.fetchone()
+    if found_task and found_task.is_done == False:
+        cursor.execute(
+            '''
+            UPDATE tasks SET priority = ? WHERE title = ?
+            ''',
+            (priority, title)
+        )
+    else:
+        raise ValueError("You cannot modify tasks, which are done") # TODO: przemyśleć, czy napewdo dobry wybór errora
 
-def update_content(task_name: str, content: str) -> None:
+def update_content(title: str, content: str) -> None:
     cursor.execute(
         '''
-        UPDATE tasks SET content = ? WHERE name = ?
+        SELECT *
+        FROM tasks
+        WHERE title = ?
         ''',
-        (content, task_name)
+        (title,)
     )
+    found_task = cursor.fetchone()
+    if found_task and found_task.is_done == False:
+        cursor.execute(
+            '''
+            UPDATE tasks
+            SET content = ?
+            WHERE title = ?
+            ''',
+            (content, title)
+        )
+    else:
+        raise ValueError("You cannot modify tasks, which are done")
 
-def mark_as_done(task_name: str) -> None:
+
+def mark_as_done(title: str) -> None:
     cursor.execute(
         '''
-        UPDATE tasks SET is_done = TRUE WHERE name = ?
+        SELECT *
+        FROM tasks
+        WHERE title = ?
         ''',
-        task_name
+        (title,)
     )
+    found_task = cursor.fetchone()
+    if found_task and found_task.is_done == False:
+        cursor.execute(
+            '''
+            UPDATE tasks
+            SET is_done = TRUE
+            WHERE title = ?
+            ''',
+            (title,)  # ZAJEBIŚCIE WAŻNE, INACZEJ STRING TRAKTOWANY BĘDZIE JAKO LISTA ZNAKÓW
+        )
+    else:
+        raise ValueError("You cannot modify tasks, which are done")
 
-def remove_task(task_name: str) -> None:
+def remove_task(title: str) -> None:
     cursor.execute(
         '''
-        DELETE FROM tasks WHERE name = ?
+        DELETE FROM tasks WHERE title = ?
         ''',
-        task_name
+        (title,)
     )
 
 def get_list_of_tasks(only_undone: bool = False) -> list[task.Task]|None:
@@ -72,14 +112,14 @@ def get_list_of_tasks(only_undone: bool = False) -> list[task.Task]|None:
     else:
         cursor.execute("SELECT * FROM tasks")
     tasks = []
-    for identifier, task_name, priority, content, created_at, due_to, is_done in cursor.fetchall():
+    for identifier, title, priority, content, due_to, created_at,  is_done in cursor.fetchall():
         formatted_task = task.Task(
-            task_name,
+            title,
             priority,
             content,
-            due_to,
-            created_at,
-            is_done
+            datetime.datetime.strptime(due_to, "%Y-%m-%d %H:%M:%S"),
+            datetime.datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S.%f"),
+            bool(is_done)
         )
         tasks.append(formatted_task)
 
