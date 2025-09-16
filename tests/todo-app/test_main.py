@@ -75,7 +75,7 @@ class TestMainApp(unittest.TestCase):
         task = make_task(is_done=True)
         database_operations.create_new_task(self.cursor, task)
         self.connection.commit()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PermissionError):
             database_operations.update_priority(self.cursor, task.title, 1)
 
     def test_update_content(self):
@@ -92,7 +92,7 @@ class TestMainApp(unittest.TestCase):
         task = make_task(is_done=True)
         database_operations.create_new_task(self.cursor, task)
         self.connection.commit()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PermissionError):
             database_operations.update_content(self.cursor, task.title, "This is new valid content!")
 
     def test_mark_as_done(self):

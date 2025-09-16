@@ -82,7 +82,7 @@ class TestTodoAppDatabase(unittest.TestCase):
         tsk = self.insert_task()
         self.cursor.execute('UPDATE tasks SET is_done = TRUE WHERE title = ?', (tsk.title,))
         self.connection.commit()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PermissionError):
             database_operations.update_priority(self.cursor, tsk.title, 2)
 
     def test_update_content_on_undone_task(self):
@@ -98,7 +98,7 @@ class TestTodoAppDatabase(unittest.TestCase):
         tsk = self.insert_task()
         self.cursor.execute('UPDATE tasks SET is_done = TRUE WHERE title = ?', (tsk.title,))
         self.connection.commit()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PermissionError):
             database_operations.update_content(self.cursor, tsk.title, "Another content")
 
     def test_mark_as_done(self):
