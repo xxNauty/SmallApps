@@ -1,13 +1,15 @@
-import datetime
-import sqlite3
-from todo_app import task
+from datetime import datetime
+from todo_app.task import Task
+from sqlite3 import Cursor, connect
 
-connection = sqlite3.connect("todo_app/database/tasks.db")
-cursor = connection.cursor()
+def init_database() -> Cursor:
+    connection = connect("todo_app/database/tasks.db")
+    cursor = connection.cursor()
 
-cursor.execute(
+    cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS tasks(
+        CREATE TABLE IF NOT EXISTS tasks
+        (
             id INTEGER PRIMARY KEY,
             title TEXT CHECK (length(title) BETWEEN 3 AND 25),
             priority INTEGER CHECK (priority BETWEEN 1 AND 3),
@@ -17,9 +19,10 @@ cursor.execute(
             is_done BOOLEAN
         )
         '''
-)
+    )
+    return cursor
 
-def create_new_task(new_task: task.Task) -> None:
+def create_new_task(cursor: Cursor, new_task: Task) -> None:
     cursor.execute(
         '''
         INSERT INTO tasks (title, priority, content, due_to, created_at,  is_done)
@@ -35,7 +38,7 @@ def create_new_task(new_task: task.Task) -> None:
         )
     )
 
-def update_priority(title: str, priority: int) -> None:
+def update_priority(cursor: Cursor, title: str, priority: int) -> None:
     cursor.execute(
         '''
         SELECT * FROM tasks WHERE title = ?
@@ -43,6 +46,8 @@ def update_priority(title: str, priority: int) -> None:
         (title,)
     )
     found_task = cursor.fetchone()
+    found_task = Task.from_tuple(found_task)
+
     if found_task and found_task.is_done == False:
         cursor.execute(
             '''
@@ -51,9 +56,9 @@ def update_priority(title: str, priority: int) -> None:
             (priority, title)
         )
     else:
-        raise ValueError("You cannot modify tasks, which are done") # TODO: przemyśleć, czy napewdo dobry wybór errora
+        raise PermissionError("You cannot modify tasks, which are done")
 
-def update_content(title: str, content: str) -> None:
+def update_content(cursor: Cursor, title: str, content: str) -> None:
     cursor.execute(
         '''
         SELECT *
@@ -63,6 +68,8 @@ def update_content(title: str, content: str) -> None:
         (title,)
     )
     found_task = cursor.fetchone()
+    found_task = Task.from_tuple(found_task)
+
     if found_task and found_task.is_done == False:
         cursor.execute(
             '''
@@ -73,10 +80,10 @@ def update_content(title: str, content: str) -> None:
             (content, title)
         )
     else:
-        raise ValueError("You cannot modify tasks, which are done")
+        raise PermissionError("You cannot modify tasks, which are done")
 
 
-def mark_as_done(title: str) -> None:
+def mark_as_done(cursor: Cursor, title: str) -> None:
     cursor.execute(
         '''
         SELECT *
@@ -86,6 +93,7 @@ def mark_as_done(title: str) -> None:
         (title,)
     )
     found_task = cursor.fetchone()
+    found_task = Task.from_tuple(found_task)
     if found_task and found_task.is_done == False:
         cursor.execute(
             '''
@@ -98,7 +106,7 @@ def mark_as_done(title: str) -> None:
     else:
         raise ValueError("You cannot modify tasks, which are done")
 
-def remove_task(title: str) -> None:
+def remove_task(cursor: Cursor, title: str) -> None:
     cursor.execute(
         '''
         DELETE FROM tasks WHERE title = ?
@@ -106,19 +114,19 @@ def remove_task(title: str) -> None:
         (title,)
     )
 
-def get_list_of_tasks(only_undone: bool = False) -> list[task.Task]|None:
+def get_list_of_tasks(cursor: Cursor, only_undone: bool = False) -> list[Task]|None:
     if only_undone:
         cursor.execute("SELECT * FROM tasks WHERE is_done = FALSE")
     else:
         cursor.execute("SELECT * FROM tasks")
     tasks = []
     for identifier, title, priority, content, due_to, created_at,  is_done in cursor.fetchall():
-        formatted_task = task.Task(
+        formatted_task = Task(
             title,
             priority,
             content,
-            datetime.datetime.strptime(due_to, "%Y-%m-%d %H:%M:%S"),
-            datetime.datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S.%f"),
+            datetime.strptime(due_to, "%Y-%m-%d %H:%M:%S"),
+            datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S.%f"),
             bool(is_done)
         )
         tasks.append(formatted_task)
