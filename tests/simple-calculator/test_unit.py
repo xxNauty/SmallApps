@@ -1,6 +1,6 @@
 import unittest
 
-from simple_calculator import main as calculator
+import simple_calculator.main as calculator
 
 
 class TestSimpleCalculator(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestSimpleCalculator(unittest.TestCase):
         with self.assertRaises(ValueError):
             calculator.string_to_num("qwe")
         with self.assertRaises(ValueError):
-            calculator.string_to_num("1q")
+            calculator.string_to_num("1a")
         with self.assertRaises(ValueError):
             calculator.string_to_num("q1")
         with self.assertRaises(ValueError):
