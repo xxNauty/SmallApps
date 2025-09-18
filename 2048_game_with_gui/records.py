@@ -1,0 +1,102 @@
+import json
+import uuid
+import os
+import itertools
+
+from datetime import datetime
+
+def update_records(game_identifier, count_up, count_down, count_left, count_right, max_value_on_gameboard):
+    total_moves = count_up + count_down + count_left + count_right
+    current_date = datetime.now().strftime("%d.%m.%Y %H:%M")
+    records_path = "games/records.json"
+
+    # #todo: tymczasowe rozwiązanie, do naprawyy
+    if not os.path.exists(records_path):
+        with open(records_path, 'w') as file:
+            file.close()
+
+    with open(records_path, "r+") as file:
+        if file.read() == '':
+            data = {
+                "last_update": current_date,
+                "moves_up": {
+                    "record": count_up,
+                    "last_update": current_date,
+                    "updated_by": game_identifier
+                },
+                "moves_down": {
+                    "record": count_down,
+                    "last_update": current_date,
+                    "updated_by": game_identifier
+                },
+                "moves_left": {
+                    "record": count_left,
+                    "last_update": current_date,
+                    "updated_by": game_identifier
+                },
+                "moves_right": {
+                    "record": count_right,
+                    "last_update": current_date,
+                    "updated_by": game_identifier
+                },
+                "total_moves": {
+                    "record": total_moves,
+                    "last_update": current_date,
+                    "updated_by": game_identifier
+                },
+                "max_value_on_gameboard": {
+                    "record": max_value_on_gameboard,
+                    "last_update": current_date,
+                    "updated_by": game_identifier
+                },
+            }
+            json.dump(data, file, indent=4)
+        else:
+            file.seek(0)
+            data = json.load(file)
+            updated = False
+
+            if data['moves_up']['record'] > count_up:
+                data['moves_up']['record'] = count_up
+                data['moves_up']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
+                data['moves_up']['updated_by'] = game_identifier
+                updated = True
+
+            if data['moves_down']['record'] > count_down:
+                data['moves_down']['record'] = count_down
+                data['moves_down']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
+                data['moves_down']['updated_by'] = game_identifier
+                updated = True
+
+            if data['moves_left']['record'] > count_left:
+                data['moves_left']['record'] = count_left
+                data['moves_left']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
+                data['moves_left']['updated_by'] = game_identifier
+                updated = True
+
+            if data['moves_right']['record'] > count_right:
+                data['moves_right']['record'] = count_right
+                data['moves_right']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
+                data['moves_right']['updated_by'] = game_identifier
+                updated = True
+
+            if data['total_moves']['record'] > total_moves:
+                data['total_moves']['record'] = total_moves
+                data['total_moves']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
+                data['total_moves']['updated_by'] = game_identifier
+                updated = True
+
+            if data['max_value_on_gameboard']['record'] < max_value_on_gameboard:
+                data['max_value_on_gameboard']['record'] = max_value_on_gameboard
+                data['max_value_on_gameboard']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
+                data['max_value_on_gameboard']['updated_by'] = game_identifier
+                updated = True
+
+            if updated:
+                data['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
+
+            file.seek(0)
+            json.dump(data, file, indent=4)
+        file.close()
+
+update_records(str(uuid.uuid4()), 12, 12, 12, 15, 1024)
