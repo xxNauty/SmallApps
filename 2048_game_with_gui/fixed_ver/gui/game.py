@@ -1,6 +1,9 @@
-import logic
-import game_history
+# import game_history
 import tkinter as tk
+import backend.logic as logic
+import backend.moves as moves
+import backend.state as state
+import backend.board_transformations as board_transformations
 
 COLORS = {
     0: ("#cdc1b4", "#776e65"),
@@ -86,31 +89,31 @@ class GameGUI(tk.Frame):
 
         if key in ["Up", "w", "W"]:
             count_up += 1
-            self.mat, moved = logic.move_up(self.mat)
+            self.mat, moved = moves.move_up(self.mat)
         elif key in ["Down", "s", "S"]:
             count_down += 1
-            self.mat, moved = logic.move_down(self.mat)
+            self.mat, moved = moves.move_down(self.mat)
         elif key in ["Left", "a", "A"]:
             count_left += 1
-            self.mat, moved = logic.move_left(self.mat)
+            self.mat, moved = moves.move_left(self.mat)
         elif key in ["Right", "d", "D"]:
             count_right += 1
-            self.mat, moved = logic.move_right(self.mat)
+            self.mat, moved = moves.move_right(self.mat)
         else:
             return
 
-        status, max_value_on_gameboard = logic.get_current_state(self.mat)
+        status, max_value_on_gameboard = state.get_current_state(self.mat)
         if status == "GAME NOT OVER" and moved:
-            logic.add_new_2(self.mat)
+            board_transformations.add_new_2(self.mat)
         self.update_grid()
 
         if status != "GAME NOT OVER":
-            new_records = game_history.generate_report(count_up, count_down, count_left, count_right, status, max_value_on_gameboard)
+            # new_records = game_history.generate_report(count_up, count_down, count_left, count_right, status, max_value_on_gameboard)
             status_text = "You win!"
-            if new_records:
-                status_text += "\n\nNEW RECORDS MADE:\n"
-                for record, value_of_record in new_records:
-                    status_text += record + ":" + str(value_of_record) + "\n"
+            # if new_records:
+            #     status_text += "\n\nNEW RECORDS MADE:\n"
+            #     for record, value_of_record in new_records:
+            #         status_text += record + ":" + str(value_of_record) + "\n"
             self.status_label.config(text=status_text)
             self.master.unbind("<Key>")
         else:

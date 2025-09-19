@@ -39,14 +39,14 @@ def add_new_2(mat):
         mat[r][c] = 2
 
 def get_current_state(mat):
-    max = 0
+    max_val = 0
     for i in range(4):
         for j in range(4):
             field_val = mat[i][j]
-            if field_val > max:
-                max = field_val
-            if field_val == 2048:
-                return 'WON', max
+            if field_val > max_val:
+                max_val = field_val
+            if field_val == 64:
+                return 'WON', max_val
 
     for i in range(4):
         for j in range(4):
