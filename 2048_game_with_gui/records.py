@@ -1,7 +1,5 @@
 import json
-import uuid
 import os
-import itertools
 
 from datetime import datetime
 
@@ -9,6 +7,8 @@ def update_records(game_identifier, count_up, count_down, count_left, count_righ
     total_moves = count_up + count_down + count_left + count_right
     current_date = datetime.now().strftime("%d.%m.%Y %H:%M")
     records_path = "games/records.json"
+
+    updated = []
 
     # #todo: tymczasowe rozwiązanie, do naprawyy
     if not os.path.exists(records_path):
@@ -54,49 +54,49 @@ def update_records(game_identifier, count_up, count_down, count_left, count_righ
         else:
             file.seek(0)
             data = json.load(file)
-            updated = False
 
             if data['moves_up']['record'] > count_up:
                 data['moves_up']['record'] = count_up
                 data['moves_up']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
                 data['moves_up']['updated_by'] = game_identifier
-                updated = True
+                updated.append(("moves_up", count_up))
 
             if data['moves_down']['record'] > count_down:
                 data['moves_down']['record'] = count_down
                 data['moves_down']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
                 data['moves_down']['updated_by'] = game_identifier
-                updated = True
+                updated.append(("moves_down", count_down))
 
             if data['moves_left']['record'] > count_left:
                 data['moves_left']['record'] = count_left
                 data['moves_left']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
                 data['moves_left']['updated_by'] = game_identifier
-                updated = True
+                updated.append(("moves_left", count_left))
 
             if data['moves_right']['record'] > count_right:
                 data['moves_right']['record'] = count_right
                 data['moves_right']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
                 data['moves_right']['updated_by'] = game_identifier
-                updated = True
+                updated.append(("moves_right", count_right))
 
             if data['total_moves']['record'] > total_moves:
                 data['total_moves']['record'] = total_moves
                 data['total_moves']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
                 data['total_moves']['updated_by'] = game_identifier
-                updated = True
+                updated.append(("total_moves", total_moves))
 
             if data['max_value_on_gameboard']['record'] < max_value_on_gameboard:
                 data['max_value_on_gameboard']['record'] = max_value_on_gameboard
                 data['max_value_on_gameboard']['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
                 data['max_value_on_gameboard']['updated_by'] = game_identifier
-                updated = True
+                updated.append(("max_value_on_gameboard", max_value_on_gameboard))
 
             if updated:
                 data['last_update'] = datetime.now().strftime("%d.%m.%Y %H:%M")
 
-            file.seek(0)
+            file.seek(0) # ustawienie kursora na początek pliku
+            file.truncate() # wyczyszczenie zawartości pliku, w przeciwnym razie mogą pojawić się problemy przy różnicy długości plików
             json.dump(data, file, indent=4)
         file.close()
 
-update_records(str(uuid.uuid4()), 12, 12, 12, 15, 1024)
+        return updated

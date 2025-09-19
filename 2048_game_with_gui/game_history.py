@@ -5,7 +5,7 @@ import records
 from datetime import datetime
 
 def generate_report(count_up, count_down, count_left, count_right, status, max_value_on_gameboard):
-    game_identifier = str(uuid.uuid4())
+    game_identifier = str(uuid.uuid4()).split('-')[0]
     date_of_game = datetime.now().strftime("%d.%m.%Y %H:%M")
     total_moves = count_up + count_down + count_left + count_right
 
@@ -21,8 +21,10 @@ def generate_report(count_up, count_down, count_left, count_right, status, max_v
         "highest_number": max_value_on_gameboard
     }
 
-    records.update_records(game_identifier, count_up, count_down, count_left, count_right, max_value_on_gameboard)
+    new_records = records.update_records(game_identifier, count_up, count_down, count_left, count_right, max_value_on_gameboard)
 
-    with open(f"2048_game_with_gui/games/{game_identifier}.json", "w") as file:
+    with open(f"games/{game_identifier}.json", "w") as file:
         json.dump(data, file, indent=4)
         file.close()
+
+    return new_records

@@ -22,7 +22,7 @@ count_up = 0
 count_left = 0
 count_right = 0
 
-class Game2048GUI(tk.Frame):
+class GameGUI(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master.title("2048 Game")
@@ -34,6 +34,7 @@ class Game2048GUI(tk.Frame):
         self.status_label.grid(row=self.size, column=0, columnspan=self.size)
         self.init_game()
         self.master.bind("<Key>", self.key_down)
+        self.master.geometry("440x600")
 
     def init_grid(self):
         background = tk.Frame(self, bg="#bbada0")
@@ -104,13 +105,18 @@ class Game2048GUI(tk.Frame):
         self.update_grid()
 
         if status != "GAME NOT OVER":
-            self.status_label.config(text=status)
-            game_history.generate_report(count_up, count_down, count_left, count_right, status, max_value_on_gameboard)
+            new_records = game_history.generate_report(count_up, count_down, count_left, count_right, status, max_value_on_gameboard)
+            status_text = "You win!"
+            if new_records:
+                status_text += "\n\nNEW RECORDS MADE:\n"
+                for record, value_of_record in new_records:
+                    status_text += record + ":" + str(value_of_record) + "\n"
+            self.status_label.config(text=status_text)
             self.master.unbind("<Key>")
         else:
             self.status_label.config(text="")
 
 if __name__ == "__main__":
     root = tk.Tk()
-    gamegrid = Game2048GUI(master=root)
+    gamegrid = GameGUI(master=root)
     gamegrid.mainloop()
